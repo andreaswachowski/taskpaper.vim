@@ -408,7 +408,7 @@ function! taskpaper#fold(lnum, pat, ipat)
 
     if line =~? a:pat && (a:ipat == '' || line !~? a:ipat)
         return 0
-    elseif synIDattr(synID(a:lnum, 1, 1), "name") != 'taskpaperProject'
+    elseif match(synIDattr(synID(a:lnum, 1, 1), "name"), 'taskpaperProject') != 0
         return 1
     elseif level != -1
         return level
@@ -447,7 +447,7 @@ function! taskpaper#fold_except_range(lnum, begin, end)
         return 1
     elseif a:lnum >= a:begin
         return 0
-    elseif synIDattr(synID(a:lnum, 1, 1), "name") != 'taskpaperProject'
+    elseif match(synIDattr(synID(a:lnum, 1, 1), "name"), 'taskpaperProject') != 0
         return 1
     elseif level != -1
         return level
@@ -499,7 +499,7 @@ function! taskpaper#search_tag(...)
 endfunction
 
 function! taskpaper#_fold_projects(lnum)
-    if synIDattr(synID(a:lnum, 1, 1), "name") != 'taskpaperProject'
+    if match(synIDattr(synID(a:lnum, 1, 1), "name"), 'taskpaperProject') != 0
         return '='
     endif
 
@@ -519,7 +519,7 @@ function! taskpaper#newline()
     let line = getline('.')
 
     if lnum == 1 || line !~ '^\s*$' ||
-    \  synIDattr(synID(lnum - 1, 1, 1), "name") != 'taskpaperProject'
+    \  match(synIDattr(synID(a:lnum, 1, 1), "name"), 'taskpaperProject') != 0
         return ''
     endif
 
