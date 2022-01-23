@@ -22,6 +22,10 @@ if !exists('g:task_paper_archive_project')
     let g:task_paper_archive_project = "Archive"
 endif
 
+if !exists('g:task_paper_cancelled_project')
+    let g:task_paper_cancelled_project = "Cancelled"
+endif
+
 " When moving a task, should the cursor follow or stay in the same place
 " (default: follow)
 if !exists('g:task_paper_follow_move')
@@ -69,6 +73,8 @@ if !exists("no_plugin_maps") && !exists("no_taskpaper_maps")
     nnoremap <silent> <buffer> <Plug>TaskPaperPreviousProject
     \       :<C-u>call taskpaper#previous_project()<CR>
 
+    nnoremap <silent> <buffer> <Plug>TaskPaperArchiveCancelled
+    \       :<C-u>call taskpaper#archive_cancelled()<CR>
     nnoremap <silent> <buffer> <Plug>TaskPaperArchiveDone
     \       :<C-u>call taskpaper#archive_done()<CR>
     nnoremap <silent> <buffer> <Plug>TaskPaperShowToday
@@ -102,6 +108,7 @@ if !exists("no_plugin_maps") && !exists("no_taskpaper_maps")
     nmap <buffer> <Leader>tk <Plug>TaskPaperPreviousProject
 
     nmap <buffer> <Leader>tD <Plug>TaskPaperArchiveDone
+    nmap <buffer> <Leader>tC <Plug>TaskPaperArchiveCancelled
     nmap <buffer> <Leader>tT <Plug>TaskPaperShowToday
     nmap <buffer> <Leader>tX <Plug>TaskPaperShowCancelled
     nmap <buffer> <Leader>td <Plug>TaskPaperToggleDone

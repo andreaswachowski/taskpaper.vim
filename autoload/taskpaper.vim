@@ -349,6 +349,60 @@ function! taskpaper#update_project()
     call taskpaper#update_tag('project', join(reverse(projects), ' / '))
 endfunction
 
+function! taskpaper#archive_cancelled()
+    let archive_start = search('^' . g:task_paper_cancelled_project . ':', 'cw')
+    if archive_start == 0
+        call append('$', g:task_paper_cancelled_project . ':')
+        let archive_start = line('$')
+        let archive_end = 0
+    else
+        let archive_end = search('^\S\+:', 'W')
+    endif
+
+    let save_fen = &l:foldenable
+    let save_reg = [getreg('a'), getregtype('a')]
+    setlocal nofoldenable
+    call setreg('a', '')
+
+    call cursor(1, 1)
+    let deleted = 0
+
+    while 1
+        let lnum = search('@cancelled', 'W', archive_start - deleted)
+        if lnum == 0
+            break
+        endif
+
+        call taskpaper#update_project()
+        let deleted += taskpaper#delete(lnum, 'A', 1)
+    endwhile
+
+    if archive_end != 0
+        call cursor(archive_end, 1)
+
+        while 1
+            let lnum = search('@cancelled', 'W')
+            if lnum == 0
+                break
+            endif
+
+            call taskpaper#update_project()
+            let deleted += taskpaper#delete(lnum, 'A', 1)
+        endwhile
+    endif
+
+    if deleted != 0
+        call taskpaper#put([g:task_paper_cancelled_project], 'a', 1)
+    else
+        echo 'No cancelled items.'
+    endif
+
+    let &l:foldenable = save_fen
+    call setreg('a', save_reg[0], save_reg[1])
+
+    return deleted
+endfunction
+
 function! taskpaper#archive_done()
     let archive_start = search('^' . g:task_paper_archive_project . ':', 'cw')
     if archive_start == 0
