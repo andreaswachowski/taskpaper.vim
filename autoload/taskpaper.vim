@@ -716,6 +716,10 @@ function taskpaper#outliner_MyFoldLevel(line)
       echom "Start project ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
+		if (l:myindent >= l:previndent)
+      echom "Start project ".(a:line)." >".(l:myindent+1)
+			return '>'.(l:myindent+1)
+		endif
 		if (taskpaper#Project(a:line+1) == 0)
       echom "End project ".(a:line)." <".(l:myindent+1)
 			return '<'.(l:myindent+1)
@@ -727,7 +731,8 @@ function taskpaper#outliner_MyFoldLevel(line)
       echom "Start listItem ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
-		if (l:myindent < l:previndent)
+		" <= so that the two last list items in the file are kept separate
+		if (l:myindent <= l:previndent)
       echom "Start listItem ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
@@ -742,6 +747,10 @@ function taskpaper#outliner_MyFoldLevel(line)
       echom "Start comment ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
+		" if (l:myindent >= l:previndent)
+    "   echom "Keep comment ".(a:line)." ="
+		"   return "="
+		" endif
     if (taskpaper#Comment(a:line+1) == 0)
       " Here we need to end *on the current fold level*, not
       " necessarily the current indentation. So something like '<='
