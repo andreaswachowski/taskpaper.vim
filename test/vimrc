@@ -1,0 +1,16 @@
+set nocompatible
+set rtp+=../
+set rtp+=../build/vader.vim/
+set rtp-=~/.vim
+set rtp-=~/.vim/after
+filetype on
+filetype plugin on
+filetype indent on
+syntax on
+
+function! Taskpaper_FoldTextResult(textwidth, prefix, num_lines)
+  let l:lines = " (" . a:num_lines . " line" . (a:num_lines > 1 ? "s" : "") . ")"
+  let l:hyphen = repeat('-', a:textwidth - strlen(a:prefix) - strlen(l:lines))
+  let l:foldtext = a:prefix . l:hyphen . l:lines
+  return l:foldtext . repeat(' ', winwidth(0) - strlen(l:foldtext))
+endfunction

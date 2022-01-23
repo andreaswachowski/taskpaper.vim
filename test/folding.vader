@@ -1,0 +1,35 @@
+Before:
+  let g:vo_fold_length = 76
+
+After:
+  setlocal foldexpr=0
+  setlocal foldmethod=manual
+
+Given taskpaper;
+Project:
+	- List Item 1
+		some comments
+			indented comments
+	- List Item 2
+	- List Item 3
+
+Execute:
+  call taskpaper#fold_outline()
+
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "Project: ", 5), foldtextresult(1)
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 1 ", 2), foldtextresult(2)
+
+  AssertEqual 1, foldlevel(1), 'Project:'
+  AssertEqual 2, foldlevel(2), '	-List Item 1'
+  AssertEqual 3, foldlevel(3), '		some comments'
+  AssertEqual 3, foldlevel(4), '			intended comments'
+  AssertEqual 2, foldlevel(5), '	-List Item 2'
+  AssertEqual 2, foldlevel(6), '	-List Item 3'
+
+Expect;
+Project:
+	- List Item 1
+		some comments
+			indented comments
+	- List Item 2
+	- List Item 3
