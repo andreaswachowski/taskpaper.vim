@@ -686,132 +686,88 @@ function! taskpaper#outliner_MyFoldText()
 	return l:sub.repeat(' ', winwidth(0)-strdisplaywidth(l:sub))
 endfunction
 "}}}2
-" BodyText(line) {{{2
+" Project(line) {{{2
 " Determine the indent level of a line.
-function! taskpaper#outliner_BodyText(line)
-	return (match(getline(a:line),"^\t*:") == 0)
+function! taskpaper#Project(line)
+  return (match(synIDattr(synID(a:line, 1, 1), "name"), 'taskpaperProject') == 0)
 endfunction
 "}}}2
-" PreformattedBodyText(line) {{{2
+" ListItem(line) {{{2
 " Determine the indent level of a line.
-function! taskpaper#outliner_PreformattedBodyText(line)
-	return (match(getline(a:line),"^\t*;") == 0)
+function! taskpaper#ListItem(line)
+  return (match(synIDattr(synID(a:line, 1, 1), "name"), 'taskpaperListItem') == 0)
 endfunction
 "}}}2
-" PreformattedUserText(line) {{{2
+" Comment(line) {{{2
 " Determine the indent level of a line.
-function! taskpaper#outliner_PreformattedUserText(line)
-	return (match(getline(a:line),"^\t*<") == 0)
-endfunction
-"}}}2
-" PreformattedUserTextLabeled(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_PreformattedUserTextLabeled(line)
-	return (match(getline(a:line),"^\t*<\S") == 0)
-endfunction
-"}}}2
-" PreformattedUserTextSpace(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_PreformattedUserTextSpace(line)
-	return (match(getline(a:line),"^\t*< ") == 0)
-endfunction
-"}}}2
-" UserText(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_UserText(line)
-	return (match(getline(a:line),"^\t*>") == 0)
-endfunction
-"}}}2
-" UserTextSpace(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_UserTextSpace(line)
-	return (match(getline(a:line),"^\t*> ") == 0)
-endfunction
-"}}}2
-" UserTextLabeled(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_UserTextLabeled(line)
-	return (match(getline(a:line),"^\t*>\S") == 0)
-endfunction
-"}}}2
-" PreformattedTable(line) {{{2
-" Determine the indent level of a line.
-function! taskpaper#outliner_PreformattedTable(line)
-	return (match(getline(a:line),"^\t*|") == 0)
+function! taskpaper#Comment(line)
+  return (match(synIDattr(synID(a:line, 1, 1), "name"), 'taskpaperComment') == 0)
 endfunction
 "}}}2
 " MyFoldLevel(Line) {{{2
 " Determine the fold level of a line.
 function taskpaper#outliner_MyFoldLevel(line)
 	let l:myindent = taskpaper#outliner_Ind(a:line)
+	let l:previndent = taskpaper#outliner_Ind(a:line-1)
 	let l:nextindent = taskpaper#outliner_Ind(a:line+1)
 
-	if taskpaper#outliner_BodyText(a:line)
-		if (taskpaper#outliner_BodyText(a:line-1) == 0)
+	if taskpaper#Project(a:line)
+		if (taskpaper#Project(a:line-1) == 0)
+      echom "Start project ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
-		if (taskpaper#outliner_BodyText(a:line+1) == 0)
+		if (taskpaper#Project(a:line+1) == 0)
+      echom "End project ".(a:line)." <".(l:myindent+1)
 			return '<'.(l:myindent+1)
 		endif
-		return (l:myindent+1)
-	elseif taskpaper#outliner_PreformattedBodyText(a:line)
-		if (taskpaper#outliner_PreformattedBodyText(a:line-1) == 0)
+    echom "Keep project ".(a:line)." ".(l:myindent+1)
+    return (l:myindent+1)
+  elseif taskpaper#ListItem(a:line)
+		if (taskpaper#ListItem(a:line-1) == 0)
+      echom "Start listItem ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
-		if (taskpaper#outliner_PreformattedBodyText(a:line+1) == 0)
+		if (l:myindent < l:previndent)
+      echom "Start listItem ".(a:line)." >".(l:myindent+1)
+			return '>'.(l:myindent+1)
+		endif
+		if (taskpaper#ListItem(a:line+1) == 0)
+      echom "End listItem ".(a:line)." <".(l:myindent+1)
 			return '<'.(l:myindent+1)
 		endif
+    echom "Keep listItem ".(a:line)." ".(l:myindent+1)
 		return (l:myindent+1)
-	elseif taskpaper#outliner_PreformattedTable(a:line)
-		if (taskpaper#outliner_PreformattedTable(a:line-1) == 0)
+  elseif taskpaper#Comment(a:line)
+		if (taskpaper#Comment(a:line-1) == 0)
+      echom "Start comment ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
-		if (taskpaper#outliner_PreformattedTable(a:line+1) == 0)
-			return '<'.(l:myindent+1)
-		endif
-		return (l:myindent+1)
-	elseif taskpaper#outliner_PreformattedUserText(a:line)
-		if (taskpaper#outliner_PreformattedUserText(a:line-1) == 0)
-			return '>'.(l:myindent+1)
-		endif
-		if (taskpaper#outliner_PreformattedUserTextSpace(a:line+1) == 0)
-			return '<'.(l:myindent+1)
-		endif
-		return (l:myindent+1)
-	elseif taskpaper#outliner_PreformattedUserTextLabeled(a:line)
-		if (taskpaper#outliner_PreformattedUserTextLabeled(a:line-1) == 0)
-			return '>'.(l:myindent+1)
-		endif
-		if (taskpaper#outliner_PreformattedUserText(a:line+1) == 0)
-			return '<'.(l:myindent+1)
-		endif
-		return (l:myindent+1)
-	elseif taskpaper#outliner_UserText(a:line)
-		if (taskpaper#outliner_UserText(a:line-1) == 0)
-			return '>'.(l:myindent+1)
-		endif
-		if (taskpaper#outliner_UserTextSpace(a:line+1) == 0)
-			return '<'.(l:myindent+1)
-		endif
-		return (l:myindent+1)
-	elseif taskpaper#outliner_UserTextLabeled(a:line)
-		if (taskpaper#outliner_UserTextLabeled(a:line-1) == 0)
-			return '>'.(l:myindent+1)
-		endif
-		if (taskpaper#outliner_UserText(a:line+1) == 0)
-			return '<'.(l:myindent+1)
-		endif
-		return (l:myindent+1)
-	else
-		if l:myindent < l:nextindent
-			return '>'.(l:myindent+1)
-		endif
-		if l:myindent > l:nextindent
-			"return '<'.(l:nextindent+1)
-			return (l:myindent)
-			"return '<'.(l:nextindent-1)
-		endif
-		return l:myindent
+    if (taskpaper#Comment(a:line+1) == 0)
+      " Here we need to end *on the current fold level*, not
+      " necessarily the current indentation. So something like '<='
+      " But that doesn't exist. Luckily, the reference says:
+      " > It is not required to mark the start (end) of a fold with ">1" ("<1"), a fold
+      " > will also start (end) when the fold level is higher (lower) than the fold
+      " > level of the previous line.
+      " So we can end with just "="
+      echom "End comment ".(a:line)." ="
+      " return '='
+    endif
+    echom "Keep comment ".(a:line)." ="
+		return "="
+  else
+    if l:myindent < l:nextindent
+      echom 'Start fold '.(a:line)
+      return '>'.(l:myindent+1)
+    endif
+    if l:myindent > l:nextindent
+  "     "return '<'.(l:nextindent+1)
+      echom 'End fold '.(a:line)
+      return (l:myindent)
+  "     "return '<'.(l:nextindent-1)
+    endif
+    echom 'Keep fold '.(a:line)
+    return l:myindent
 	endif
 endfunction
 "}}}2
