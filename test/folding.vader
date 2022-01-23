@@ -9,15 +9,37 @@ Given taskpaper;
 Project:
 	- List Item 1
 		some comments
-			indented comments
+		  indented comments
 	- List Item 2
 	- List Item 3
 
 Execute:
   call taskpaper#fold_outline()
-
   AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "Project: ", 5), trim(foldtextresult(1), ' ', 2)
+  normal! zo
+  " AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "Project: ", 5), trim(foldtextresult(1), ' ', 2)
   AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 1 ", 2), trim(foldtextresult(2), ' ', 2)
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 2 ", 1), trim(foldtextresult(3), ' ', 2)
+
+Execute:
+  call taskpaper#fold_outline()
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 1 ", 2), trim(foldtextresult(2), ' ', 2)
+
+Execute:
+  call taskpaper#fold_outline()
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "                some comments", 1), trim(foldtextresult(3), ' ', 2)
+
+Execute:
+  call taskpaper#fold_outline()
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "                  indented comments", 1), trim(foldtextresult(4), ' ', 2)
+
+Execute:
+  call taskpaper#fold_outline()
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 2 ", 1), trim(foldtextresult(5), ' ', 2)
+
+Execute:
+  call taskpaper#fold_outline()
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 3 ", 1), trim(foldtextresult(6), ' ', 2)
 
   AssertEqual 1, foldlevel(1), 'Project:'
   AssertEqual 2, foldlevel(2), '	-List Item 1'
@@ -30,6 +52,6 @@ Expect;
 Project:
 	- List Item 1
 		some comments
-			indented comments
+		  indented comments
 	- List Item 2
 	- List Item 3
