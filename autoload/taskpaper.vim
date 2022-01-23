@@ -713,25 +713,33 @@ function taskpaper#outliner_MyFoldLevel(line)
 
 	if taskpaper#Project(a:line)
 		if (taskpaper#Project(a:line-1) == 0)
+      echom "Start project ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
 		if (taskpaper#Project(a:line+1) == 0)
+      echom "End project ".(a:line)." <".(l:myindent+1)
 			return '<'.(l:myindent+1)
 		endif
+    echom "Keep project ".(a:line)." ".(l:myindent+1)
     return (l:myindent+1)
   elseif taskpaper#ListItem(a:line)
 		if (taskpaper#ListItem(a:line-1) == 0)
+      echom "Start listItem ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
 		if (l:myindent < l:previndent)
+      echom "Start listItem ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
 		if (taskpaper#ListItem(a:line+1) == 0)
+      echom "End listItem ".(a:line)." <".(l:myindent+1)
 			return '<'.(l:myindent+1)
 		endif
+    echom "Keep listItem ".(a:line)." ".(l:myindent+1)
 		return (l:myindent+1)
   elseif taskpaper#Comment(a:line)
 		if (taskpaper#Comment(a:line-1) == 0)
+      echom "Start comment ".(a:line)." >".(l:myindent+1)
 			return '>'.(l:myindent+1)
 		endif
     if (taskpaper#Comment(a:line+1) == 0)
@@ -742,18 +750,23 @@ function taskpaper#outliner_MyFoldLevel(line)
       " > will also start (end) when the fold level is higher (lower) than the fold
       " > level of the previous line.
       " So we can end with just "="
+      echom "End comment ".(a:line)." ="
       " return '='
     endif
+    echom "Keep comment ".(a:line)." ="
 		return "="
   else
     if l:myindent < l:nextindent
+      echom 'Start fold '.(a:line)
       return '>'.(l:myindent+1)
     endif
     if l:myindent > l:nextindent
   "     "return '<'.(l:nextindent+1)
+      echom 'End fold '.(a:line)
       return (l:myindent)
   "     "return '<'.(l:nextindent-1)
     endif
+    echom 'Keep fold '.(a:line)
     return l:myindent
 	endif
 endfunction
