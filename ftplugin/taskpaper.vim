@@ -48,6 +48,8 @@ setlocal autoindent
 
 " Set up mappings
 if !exists("no_plugin_maps") && !exists("no_taskpaper_maps")
+    nnoremap <silent> <buffer> <Plug>TaskPaperFoldOutline
+    \       :<C-u>call taskpaper#fold_outline()<CR>
     nnoremap <silent> <buffer> <Plug>TaskPaperFoldProjects
     \       :<C-u>call taskpaper#fold_projects()<CR>
     nnoremap <silent> <buffer> <Plug>TaskPaperFoldNotes
@@ -87,6 +89,7 @@ if !exists("no_plugin_maps") && !exists("no_taskpaper_maps")
     inoremap <silent> <buffer> <Plug>TaskPaperNewline
     \       <CR><C-r>=taskpaper#newline()<CR>
 
+    nmap <buffer> <Leader>to <Plug>TaskPaperFoldOutline
     nmap <buffer> <Leader>tp <Plug>TaskPaperFoldProjects
     nmap <buffer> <Leader>t. <Plug>TaskPaperFoldNotes
     nmap <buffer> <Leader>tP <Plug>TaskPaperFocusProject
