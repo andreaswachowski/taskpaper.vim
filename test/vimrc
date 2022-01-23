@@ -11,6 +11,5 @@ syntax on
 function! Taskpaper_FoldTextResult(textwidth, prefix, num_lines)
   let l:lines = " (" . a:num_lines . " line" . (a:num_lines > 1 ? "s" : "") . ")"
   let l:hyphen = repeat('-', a:textwidth - strlen(a:prefix) - strlen(l:lines))
-  let l:foldtext = a:prefix . l:hyphen . l:lines
-  return l:foldtext . repeat(' ', winwidth(0) - strlen(l:foldtext))
+  return a:prefix . l:hyphen . l:lines
 endfunction

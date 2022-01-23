@@ -16,8 +16,8 @@ Project:
 Execute:
   call taskpaper#fold_outline()
 
-  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "Project: ", 5), foldtextresult(1)
-  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 1 ", 2), foldtextresult(2)
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "Project: ", 5), trim(foldtextresult(1), ' ', 2)
+  AssertEqual Taskpaper_FoldTextResult(g:vo_fold_length, "        - List Item 1 ", 2), trim(foldtextresult(2), ' ', 2)
 
   AssertEqual 1, foldlevel(1), 'Project:'
   AssertEqual 2, foldlevel(2), '	-List Item 1'
