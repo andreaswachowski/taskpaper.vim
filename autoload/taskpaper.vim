@@ -519,7 +519,7 @@ function! taskpaper#newline()
     let line = getline('.')
 
     if lnum == 1 || line !~ '^\s*$' ||
-    \  match(synIDattr(synID(a:lnum, 1, 1), "name"), 'taskpaperProject') != 0
+    \  match(synIDattr(synID(lnum - 1, 1, 1), "name"), 'taskpaperProject') != 0
         return ''
     endif
 
